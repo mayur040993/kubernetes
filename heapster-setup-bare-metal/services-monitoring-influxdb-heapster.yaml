@@ -1,0 +1,75 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      kubernetes.io/cluster-service: "true"
+      kubernetes.io/name: Heapster
+    name: heapster
+    namespace: kube-system
+    resourceVersion: "77"
+    selfLink: /api/v1/namespaces/kube-system/services/heapster
+    uid: de2e33ea-5ad7-11e6-b082-120157131d3d
+  spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8082
+    selector:
+      k8s-app: heapster
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      kubernetes.io/cluster-service: "true"
+      kubernetes.io/name: Grafana
+    name: monitoring-grafana
+    namespace: kube-system
+    resourceVersion: "96"
+    selfLink: /api/v1/namespaces/kube-system/services/monitoring-grafana
+    uid: de54d2ff-5ad7-11e6-b082-120157131d3d
+  spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 3000
+    selector:
+      k8s-app: influxGrafana
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      kubernetes.io/cluster-service: "true"
+      kubernetes.io/name: InfluxDB
+    name: monitoring-influxdb
+    namespace: kube-system
+    resourceVersion: "71"
+    selfLink: /api/v1/namespaces/kube-system/services/monitoring-influxdb
+    uid: de10716f-5ad7-11e6-b082-120157131d3d
+  spec:
+    ports:
+    - name: http
+      port: 8083
+      protocol: TCP
+      targetPort: 8083
+    - name: api
+      port: 8086
+      protocol: TCP
+      targetPort: 8086
+    selector:
+      k8s-app: influxGrafana
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}

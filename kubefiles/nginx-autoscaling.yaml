@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-nginx
+  namespace: default
+spec:
+  scaleRef:
+    kind: Deployment
+    name: my-nginx
+    subresource: scale
+  minReplicas: 1
+  maxReplicas: 5
+  cpuUtilization:
+    targetPercentage: 20

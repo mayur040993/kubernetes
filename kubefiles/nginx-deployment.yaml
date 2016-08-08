@@ -1,0 +1,24 @@
+---
+apiVersion:  extensions/v1beta1
+kind: Deployment
+metadata:
+  name: my-nginx
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: my-nginx3
+    spec:
+      containers:
+      - name: mynginx3
+        image: nginx
+        resources:
+          limits:
+            cpu: 200m
+            memory: 400Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        ports:
+        - containerPort: 80

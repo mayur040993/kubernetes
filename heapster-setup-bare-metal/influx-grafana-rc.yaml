@@ -1,0 +1,88 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    generation: 1
+    labels:
+      k8s-app: influxGrafana
+      kubernetes.io/cluster-service: "true"
+      version: v3
+    name: monitoring-influxdb-grafana-v3
+    namespace: kube-system
+    resourceVersion: "56"
+    selfLink: /api/v1/namespaces/kube-system/replicationcontrollers/monitoring-influxdb-grafana-v3
+    uid: dd8208cb-5ad7-11e6-b082-120157131d3d
+  spec:
+    replicas: 1
+    selector:
+      k8s-app: influxGrafana
+      version: v3
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          k8s-app: influxGrafana
+          kubernetes.io/cluster-service: "true"
+          version: v3
+      spec:
+        containers:
+        - image: gcr.io/google_containers/heapster_influxdb:v0.5
+          imagePullPolicy: IfNotPresent
+          name: influxdb
+          ports:
+          - containerPort: 8083
+            protocol: TCP
+          - containerPort: 8086
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 100m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 500Mi
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+          - mountPath: /data
+            name: influxdb-persistent-storage
+        - env:
+          - name: INFLUXDB_SERVICE_URL
+            value: http://monitoring-influxdb:8086
+          - name: GF_AUTH_BASIC_ENABLED
+            value: "false"
+          - name: GF_AUTH_ANONYMOUS_ENABLED
+            value: "true"
+          - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+            value: Admin
+          - name: GF_SERVER_ROOT_URL
+            value: /api/v1/proxy/namespaces/kube-system/services/monitoring-grafana/
+          image: gcr.io/google_containers/heapster_grafana:v2.6.0-2
+          imagePullPolicy: IfNotPresent
+          name: grafana
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+          - mountPath: /var
+            name: grafana-persistent-storage
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: influxdb-persistent-storage
+        - emptyDir: {}
+          name: grafana-persistent-storage
+  status:
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    replicas: 1
+kind: List
+metadata: {}
